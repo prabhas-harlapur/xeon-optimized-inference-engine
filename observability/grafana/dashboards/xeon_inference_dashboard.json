@@ -1,0 +1,89 @@
+{
+  "id": null,
+  "uid": "xeon6-inference-overview",
+  "title": "Xeon Inference Engine Overview",
+  "tags": ["xeon", "genai", "cpu"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 2,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Request Rate",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [{ "expr": "sum(rate(xeon_requests_total[1m]))", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "stat",
+      "title": "P90 Latency (ms)",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "targets": [{ "expr": "histogram_quantile(0.90, sum by (le) (rate(xeon_request_latency_seconds_bucket[1m]))) * 1000", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "type": "stat",
+      "title": "Host CPU %",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "targets": [{ "expr": "xeon_host_cpu_percent", "refId": "A" }]
+    },
+    {
+      "type": "stat",
+      "title": "Memory Utilization %",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "targets": [{ "expr": "100 * xeon_host_memory_used_bytes / xeon_host_memory_total_bytes", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Throughput by Endpoint",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [{ "expr": "sum by(endpoint) (rate(xeon_requests_total[1m]))", "legendFormat": "{{endpoint}}", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency Quantiles",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(xeon_request_latency_seconds_bucket[1m])))", "legendFormat": "p50", "refId": "A" },
+        { "expr": "histogram_quantile(0.90, sum by (le) (rate(xeon_request_latency_seconds_bucket[1m])))", "legendFormat": "p90", "refId": "B" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(xeon_request_latency_seconds_bucket[1m])))", "legendFormat": "p99", "refId": "C" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Per-Core CPU %",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [{ "expr": "xeon_core_cpu_percent", "legendFormat": "core {{core}}", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Token Throughput",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "targets": [
+        { "expr": "sum(rate(xeon_tokens_input_total[1m]))", "legendFormat": "input tok/s", "refId": "A" },
+        { "expr": "sum(rate(xeon_tokens_output_total[1m]))", "legendFormat": "output tok/s", "refId": "B" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk Utilization %",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 20 },
+      "targets": [{ "expr": "100 * xeon_host_disk_used_bytes / xeon_host_disk_total_bytes", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "NUMA Free Memory %",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 20 },
+      "targets": [{ "expr": "100 * xeon_numa_memory_free_bytes / xeon_numa_memory_total_bytes", "legendFormat": "node {{node}}", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Cache Size (bytes)",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 20 },
+      "targets": [{ "expr": "max by(level, type) (xeon_cpu_cache_size_bytes)", "legendFormat": "L{{level}} {{type}}", "refId": "A" }]
+    }
+  ],
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" }
+}
