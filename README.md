@@ -35,6 +35,13 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+For CPU-only PyTorch wheels on Linux Xeon hosts:
+
+```bash
+pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
+pip install intel-extension-for-pytorch==2.8.0
+```
+
 2. Run the engine:
 
 ```powershell

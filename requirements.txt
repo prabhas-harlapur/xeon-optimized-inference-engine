@@ -7,4 +7,5 @@ httpx==0.28.1
 numpy==2.2.0
 pandas==2.2.3
 transformers==4.47.1
-torch==2.5.1
+torch==2.8.0
+intel-extension-for-pytorch==2.8.0
